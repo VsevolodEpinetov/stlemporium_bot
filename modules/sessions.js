@@ -2,7 +2,7 @@ const RedisSession = require('telegraf-session-redis-upd')
 
 const globalSession = new RedisSession({
   property: 'globalSession',
-  getSessionKey: () => { return "global" }
+  getSessionKey: () => { return "globalEmporium" }
 })
 
 const channelsSession = new RedisSession({
