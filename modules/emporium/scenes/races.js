@@ -15,7 +15,7 @@ emporiumRacesStage.enter(async (ctx) => {
   const data = await api.get('https://api.stl-emporium.ru/api/races?fields[0]=value&fields[1]=label&pagination[pageSize]=100');
   const races = data.data.data.map(r => r.attributes.value).sort();
   ctx.session.races = races;
-  ctx.replyWithHTML(`Так и запишем - ${ctx.session.emporium.creatureData.sex}. Напиши расы существа.\n\nДоступные:${races.map(r => `\n<code>${r},</code>`).join('')}`, {
+  ctx.replyWithHTML(`Так и запишем - ${ctx.session.emporium.creatureData.sex}. Напиши расы существа.\n\nДоступные:${races.map(r => `\n<code>${r},</code>`).join('')}\n\nПресеты:\n<code>elf,half-elf,human,half-orc,</code>\n<code>dwarf,gnome,halfling,</code>`, {
     parse_mode: 'HTML'
   }).then(nctx => {
     ctx.session.emporium.botData.lastMessage.bot = nctx.message_id;
