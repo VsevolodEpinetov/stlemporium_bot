@@ -19,7 +19,7 @@ emporiumClassesStage.enter(async (ctx) => {
   const classesMonsters = dataMonster.data.data.map(r => r.attributes.value).sort();
   ctx.session.classesMonsters = classesMonsters;
   const creatureData = ctx.session.emporium.creatureData;
-  ctx.replyWithHTML(`Записал указанные тобой расы:${creatureData.races.map(r => `${r} `).join(' ')}\nНапиши классы существа.\n\nДоступные для твоего типа (${creatureData.isHero ? 'Герой ' : ''}${creatureData.isMonster ? 'Монстр' : ''}):${creatureData.isHero ? classesHeroes.map(cl => `\n<code>${cl},</code>`).join('') + `${creatureData.isMonster ? '\n\n' : ''}` : ''}${creatureData.isMonster ? classesMonsters.map(cl => `\n<code>${cl},</code>`).join('') : ''}${creatureData.IsHero ? `\n\nПресеты для героев:\n<code>warlock,sorcerer,wizard,</code>\n<code>fighter,gladiator,paladin,</code>` : ''}`, {
+  ctx.replyWithHTML(`Записал указанные тобой расы:${creatureData.races.map(r => `${r} `).join(' ')}\nНапиши классы существа.\n\nДоступные для твоего типа (${creatureData.isHero ? 'Герой ' : ''}${creatureData.isMonster ? 'Монстр' : ''}):${creatureData.isHero ? classesHeroes.map(cl => `\n<code>${cl},</code>`).join('') + `${creatureData.isMonster ? '\n\n' : ''}` : ''}${creatureData.isMonster ? classesMonsters.map(cl => `\n<code>${cl},</code>`).join('') : ''}\n\nПресеты для героев:\n<code>warlock,</code><code>sorcerer,</code><code>wizard,</code>\n<code>fighter,</code><code>gladiator,</code><code>paladin,</code>`, {
     parse_mode: 'HTML'
   }).then(nctx => {
     ctx.session.emporium.botData.lastMessage.bot = nctx.message_id;

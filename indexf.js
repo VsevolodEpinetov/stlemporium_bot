@@ -4,7 +4,6 @@ require('dotenv').config();
 const bot = new Telegraf(process.env.TOKEN)
 const telegram = new Telegram(process.env.TOKEN)
 const SETTINGS = require('./settings.json')
-const STUDIOS = require('./studios.json')
 
 const util = require('./modules/util.js');
 //#endregion
@@ -23,8 +22,8 @@ bot.use(
 )
 //#endregion
 
-bot.command('nl', ctx => {
-  ctx.globalSession.lots = [];
+bot.command('hi', ctx => {
+  ctx.reply('hey')
 })
 
 bot.catch((error) => {
