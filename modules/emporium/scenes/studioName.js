@@ -3,7 +3,8 @@ const SETTINGS = require('../../../settings.json');
 const STUDIOS = require('../studios.json');
 const util = require('../../util.js')
 
-const emporiumStudioNameStage = new Scenes.BaseScene('EMPORIUM_STUDIO_NAME_STAGE');
+const emporiumStudioNameStage = new Scenes.BaseScene('STUDIO_NAME');
+const nextStageName = 'RELEASE_NAME';
 
 function createStringWithKeys(json) {
   let keysString = "";
@@ -34,7 +35,7 @@ emporiumStudioNameStage.command('exit', (ctx) => {
 emporiumStudioNameStage.enter((ctx) => {
   let json = ctx.globalSession.emporium.studios ? ctx.globalSession.emporium.studios : STUDIOS;
   const studios = createStringWithKeys(json);
-  ctx.replyWithHTML(`Напиши название студии. \n\nОчень важно писать названия в едином стиле, так как на основании этого выдаётся артикул. Если нужной студии нет, то напиши её название, ей выдастся новый номер. Если она уже есть в списке, то просто скопируй название. \n\nДоступные студии:\n${studios}`, {
+  ctx.replyWithHTML(`Записал, что это:${ctx.session.emporium.creatureData.isHero ? ' герой' : ''}${ctx.session.emporium.creatureData.isHero ? ' монстр' : ''}.\n\nНапиши название студии. \n\nОчень важно писать названия в едином стиле, так как на основании этого выдаётся артикул. Если нужной студии нет, то напиши её название, ей выдастся новый номер. Если она уже есть в списке, то просто скопируй название. \n\nДоступные студии:\n${studios}`, {
     parse_mode: 'HTML'
   }).then(nctx => {
     ctx.session.emporium.botData.lastMessage.bot = nctx.message_id;
@@ -42,7 +43,6 @@ emporiumStudioNameStage.enter((ctx) => {
 });
 
 emporiumStudioNameStage.on('message', (ctx) => {
-  console.log('yes')
   ctx.session.emporium.creatureData.studioName = ctx.message.text;
   if (ctx.globalSession.emporium.studios[ctx.message.text]) {
     ctx.session.emporium.creatureData.code = ctx.globalSession.emporium.studios[ctx.message.text].code;
@@ -60,7 +60,7 @@ emporiumStudioNameStage.on('message', (ctx) => {
   catch (err) {
     console.log(err);
   }
-  ctx.scene.enter('EMPORIUM_RELEASE_NAME_STAGE')
+  ctx.scene.enter(nextStageName);
 })
 
 

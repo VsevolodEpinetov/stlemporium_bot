@@ -1,8 +1,10 @@
 const { Scenes, Markup } = require("telegraf");
 const SETTINGS = require('../../../settings.json');
 const util = require('../../util.js')
+const emporiumUtils = require('../util.js')
 
-const emporiumTypeStage = new Scenes.BaseScene('EMPORIUM_TYPE_STAGE');
+const emporiumTypeStage = new Scenes.BaseScene('TYPE_OF_MINIATURE');
+const nextStageName = 'STUDIO_NAME';
 
 emporiumTypeStage.enter((ctx) => {
   ctx.session.emporium = {
@@ -87,7 +89,7 @@ emporiumTypeStage.action('actionEmporiumDone', (ctx) => {
   catch (err) {
     console.log(err);
   }
-  return ctx.scene.enter('EMPORIUM_STUDIO_NAME_STAGE');
+  return ctx.scene.enter(nextStageName);
 })
 
 emporiumTypeStage.action('actionEmporiumWH', (ctx) => {
@@ -104,7 +106,7 @@ emporiumTypeStage.action('actionEmporiumWH', (ctx) => {
   catch (err) {
     console.log(err);
   }
-  return ctx.scene.enter('EMPORIUM_STUDIO_NAME_STAGE');
+  return ctx.scene.enter(nextStageName);
 })
 
 emporiumTypeStage.leave(async (ctx) => {

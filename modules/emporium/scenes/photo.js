@@ -3,12 +3,14 @@ const SETTINGS = require('../../../settings.json');
 const util = require('../../util.js');
 const emporiumUtils = require('../util.js')
 
-const emporiumPhotoStage = new Scenes.BaseScene('EMPORIUM_CLASSES_PHOTO');
+const thisStageName = 'PICTURE';
+
+const emporiumPhotoStage = new Scenes.BaseScene(thisStageName);
 
 emporiumPhotoStage.enter((ctx) => {
   const creatureData = ctx.session.emporium.creatureData;
   let message = ``;
-  if (!creatureData.isWH) message = `Записал указанное тобой оружие: ${creatureData.weapons.map(w => `${w}`).join(' ')}`
+  if (!creatureData.isWH) message = `Записал данные.`
   else message = `Записал указанные тобой типы: ${creatureData.whTypes.map(w => `${w}`).join(' ')}`
   ctx.replyWithHTML(`${message} Пришли документом превью миниатюрки`, {
     parse_mode: 'HTML'
@@ -40,8 +42,11 @@ emporiumPhotoStage.on('document', async (ctx) => {
     console.log(err);
   }
   let caption;
-  if (!creatureData.isWH) caption = `Данные\n\nРасы: ${creatureData.races.join(', ')}\nКлассы: ${creatureData.classes.join(', ')}\nОружие: ${creatureData.weapons.join(', ')}\n\nСтудия: ${creatureData.studioName}\nРелиз: ${creatureData.releaseName}\nКод:${creatureData.code}\n\nПол: ${creatureData.sex}`
-  else caption = `Данные\n\nФракции: ${creatureData.factions.join(', ')}\nТипы: ${creatureData.whTypes.join(', ')}\n\nСтудия: ${creatureData.studioName}\nРелиз: ${creatureData.releaseName}\nКод:${creatureData.code}`
+  if (!creatureData.isWH) {
+    caption = emporiumUtils.generateACaption(creatureData);
+  } else {
+    caption = 'Ну типа кэпшн для вх40к'
+  }
   ctx.replyWithDocument({ source: resultImageBuffer, filename: `${creatureData.code}.png` }, {
     caption: caption,
     parse_mode: 'HTML',

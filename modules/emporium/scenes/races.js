@@ -1,21 +1,17 @@
 const { Scenes, Markup } = require("telegraf");
-const SETTINGS = require('../../../settings.json');
 const util = require('../../util.js');
-const { default: axios } = require("axios");
+const emporiumUtils = require('../util.js')
 
-const emporiumRacesStage = new Scenes.BaseScene('EMPORIUM_RACES_STAGE');
+const nextStageName = 'WEAPONS'
+const thisStageName = 'RACES';
+const endpoint = 'races';
+
+const emporiumRacesStage = new Scenes.BaseScene(thisStageName);
 
 emporiumRacesStage.enter(async (ctx) => {
-  const api = axios.create({
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${process.env.TOKEN_GET_FILTERS}`
-    },
-  });
-  const data = await api.get('https://api.stl-emporium.ru/api/races?fields[0]=value&fields[1]=label&pagination[pageSize]=100');
-  const races = data.data.data.map(r => r.attributes.value).sort();
-  ctx.session.races = races;
-  ctx.replyWithHTML(`Так и запишем - ${ctx.session.emporium.creatureData.sex}. Напиши расы существа.\n\nДоступные:${races.map(r => `\n<code>${r},</code>`).join('')}\n\nПресеты:\n<code>half-elf,</code><code>human,</code><code>half-orc,</code>\n<code>dwarf,</code><code>gnome,</code><code>halfling,</code>`, {
+  const dataFromApi = await emporiumUtils.getDataFromApi(endpoint);
+  ctx.session.data = dataFromApi;
+  ctx.replyWithHTML(`Так и запишем - ${ctx.session.emporium.creatureData.sex}. Напиши расы существа.\n\nДоступные:${dataFromApi.map(r => `\n<code>${r},</code>`).join('')}\n\nПресеты:\n<code>half-elf,</code><code>human,</code><code>half-orc,</code>\n<code>dwarf,</code><code>gnome,</code><code>halfling,</code>`, {
     parse_mode: 'HTML'
   }).then(nctx => {
     ctx.session.emporium.botData.lastMessage.bot = nctx.message_id;
@@ -29,9 +25,9 @@ emporiumRacesStage.command('exit', (ctx) => {
 })
 
 emporiumRacesStage.on('message', (ctx) => {
-  const data = ctx.message.text.replace(/\s/g, '');
-  const racesArray = data.split(',').filter((item) => item !== '');
-  const validRaces = racesArray.filter((race) => ctx.session.races.includes(race));
+  const userData = ctx.message.text.replace(/\s/g, '');
+  const userDataArray = userData.split(',').filter((item) => item !== '');
+  const validData = userDataArray.filter((d) => ctx.session.data.includes(d));
 
   try {
     ctx.deleteMessage(ctx.session.emporium.botData.lastMessage.bot);
@@ -40,12 +36,12 @@ emporiumRacesStage.on('message', (ctx) => {
     console.log(err);
   }
 
-  if (validRaces.length === 0) {
-    ctx.reply('Указанные тобой расы не существуют на сайте'); // Respond if no valid races are found
-    ctx.scene.enter('EMPORIUM_RACES_STAGE');
+  if (validData.length === 0) {
+    ctx.reply('Указанные тобой данные не существуют на сайте'); // Respond if no valid races are found
+    ctx.scene.enter(thisStageName);
   } else {
-    ctx.session.emporium.creatureData.races = validRaces;
-    ctx.scene.enter('EMPORIUM_CLASSES_STAGE');
+    ctx.session.emporium.creatureData.races = validData;
+    ctx.scene.enter(nextStageName);
   }
 })
 

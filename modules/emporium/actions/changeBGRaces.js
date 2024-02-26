@@ -26,7 +26,7 @@ module.exports = Composer.action(/^action-change-bg-races-[0-9]+$/g, async ctx =
         buffer: resultImageBuffer
       }
       ctx.replyWithDocument({ source: resultImageBuffer, filename: `${creatureData.code}.png` }, {
-        caption: `Данные\n\nРасы: ${creatureData.races.join(', ')}\nКлассы: ${creatureData.classes.join(', ')}\nОружие: ${creatureData.weapons.join(', ')}\n\nСтудия: ${creatureData.studioName}\nРелиз: ${creatureData.releaseName}\nКод:${creatureData.code}\n\nПол: ${creatureData.sex}`,
+        caption: emporiumUtils.generateACaption(creatureData),
         parse_mode: 'HTML',
         ...Markup.inlineKeyboard([
           [

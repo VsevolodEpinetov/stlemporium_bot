@@ -2,7 +2,8 @@ const { Scenes, Markup } = require("telegraf");
 const SETTINGS = require('../../../settings.json');
 const util = require('../../util.js')
 
-const emporiumSexStage = new Scenes.BaseScene('EMPORIUM_SEX_STAGE');
+const emporiumSexStage = new Scenes.BaseScene('SEX');
+const nextStageName = 'RACES'
 
 emporiumSexStage.enter((ctx) => {
   ctx.replyWithHTML(`Ага, название релиза -  "${ctx.session.emporium.creatureData.releaseName}", код миниатюрки: ${ctx.session.emporium.creatureData.code}. Укажи предполагаемый пол существа`, {
@@ -35,7 +36,7 @@ emporiumSexStage.action('actionEmporiumMale', ctx => {
   catch (err) {
     console.log(err);
   }
-  ctx.scene.enter('EMPORIUM_RACES_STAGE')
+  ctx.scene.enter(nextStageName)
 })
 
 emporiumSexStage.action('actionEmporiumFemale', ctx => {
@@ -46,7 +47,7 @@ emporiumSexStage.action('actionEmporiumFemale', ctx => {
   catch (err) {
     console.log(err);
   }
-  ctx.scene.enter('EMPORIUM_RACES_STAGE')
+  ctx.scene.enter(nextStageName)
 })
 
 emporiumSexStage.action('actionEmporiumAlien', ctx => {
@@ -57,7 +58,7 @@ emporiumSexStage.action('actionEmporiumAlien', ctx => {
   catch (err) {
     console.log(err);
   }
-  ctx.scene.enter('EMPORIUM_RACES_STAGE')
+  ctx.scene.enter(nextStageName)
 })
 
 

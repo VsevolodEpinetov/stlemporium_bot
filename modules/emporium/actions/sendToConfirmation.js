@@ -18,7 +18,7 @@ module.exports = Composer.action(/^action-emporium-confirm-[0-9]+$/g, async ctx 
       const creatureData = queueData.data;
       const resultImageBuffer = Buffer.from(creatureData.preview.buffer.data, 'binary');
       let caption;
-      if (!creatureData.isWH) caption = `Данные\n\nРасы: ${creatureData.races.join(', ')}\nКлассы: ${creatureData.classes.join(', ')}\nОружие: ${creatureData.weapons.join(', ')}\n\nСтудия: ${creatureData.studioName}\nРелиз: ${creatureData.releaseName}\nКод:${creatureData.code}\n\nПол: ${creatureData.sex}`
+      if (!creatureData.isWH) caption = emporiumUtils.generateACaption(creatureData)
       else caption = `Данные\n\nФракции: ${creatureData.factions.join(', ')}\nТипы: ${creatureData.whTypes.join(', ')}\n\nСтудия: ${creatureData.studioName}\nРелиз: ${creatureData.releaseName}\nКод:${creatureData.code}`
       ctx.deleteMessage(queueData.lastBotMessageId);
       ctx.replyWithDocument({ source: resultImageBuffer, filename: `${creatureData.code}.png` }, {

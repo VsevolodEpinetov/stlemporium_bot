@@ -1,8 +1,9 @@
 const { Scenes, Markup } = require("telegraf");
-const SETTINGS = require('../../../settings.json');
 const util = require('../../util.js')
 
-const emporiumReleaseNameStage = new Scenes.BaseScene('EMPORIUM_RELEASE_NAME_STAGE');
+const emporiumReleaseNameStage = new Scenes.BaseScene('RELEASE_NAME');
+const nextStageName = 'SEX';
+const nextStageNameWarhammer = 'EMPORIUM_WH_FACTIONS_STAGE';
 
 function createStringWithKeys(json) {
   let keysString = "";
@@ -90,9 +91,9 @@ emporiumReleaseNameStage.on('message', (ctx) => {
     console.log(err);
   }
   if (!ctx.session.emporium.creatureData.isWH) {
-    ctx.scene.enter('EMPORIUM_SEX_STAGE')
+    ctx.scene.enter(nextStageName)
   } else {
-    ctx.scene.enter('EMPORIUM_WH_FACTIONS_STAGE')
+    ctx.scene.enter(nextStageNameWarhammer)
   }
 })
 

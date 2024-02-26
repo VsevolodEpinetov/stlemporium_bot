@@ -1,6 +1,6 @@
 const { Scenes, Markup } = require("telegraf");
-const SETTINGS = require('../../../settings.json');
-const util = require('../../util.js');
+const SETTINGS = require('../../../../settings.json');
+const util = require('../../../util.js');
 const { default: axios } = require("axios");
 
 const emporiumWHFactionsStage = new Scenes.BaseScene('EMPORIUM_WH_FACTIONS_STAGE');

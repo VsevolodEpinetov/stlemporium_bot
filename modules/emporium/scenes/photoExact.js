@@ -3,7 +3,7 @@ const SETTINGS = require('../../../settings.json');
 const util = require('../../util.js');
 const emporiumUtils = require('../util.js')
 
-const emporiumExactPhotoStage = new Scenes.BaseScene('EMPORIUM_STAGE_EXACT_PHOTO');
+const emporiumExactPhotoStage = new Scenes.BaseScene('PICTURE_EXACT');
 
 emporiumExactPhotoStage.enter((ctx) => {
   const id = ctx.session.passingId;
@@ -38,7 +38,7 @@ emporiumExactPhotoStage.on('message', async (ctx) => {
   
   ctx.reply('Меняю фон...')
   ctx.replyWithDocument({ source: resultImageBuffer, filename: `${creatureData.code}.png` }, {
-    caption: `Данные\n\nРасы: ${creatureData.races.join(', ')}\nКлассы: ${creatureData.classes.join(', ')}\nОружие: ${creatureData.weapons.join(', ')}\n\nСтудия: ${creatureData.studioName}\nРелиз: ${creatureData.releaseName}\nКод:${creatureData.code}\n\nПол: ${creatureData.sex}`,
+    caption: emporiumUtils.generateACaption(creatureData),
     parse_mode: 'HTML',
     ...Markup.inlineKeyboard([
       [

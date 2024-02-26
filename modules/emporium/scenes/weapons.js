@@ -1,22 +1,19 @@
 const { Scenes, Markup } = require("telegraf");
 const SETTINGS = require('../../../settings.json');
 const util = require('../../util.js');
-const { default: axios } = require("axios");
+const emporiumUtils = require('../util.js')
 
-const emporiumWeaponsStage = new Scenes.BaseScene('EMPORIUM_CLASSES_WEAPONS');
+const nextStageNameHero = 'CLASSES';
+const nextStageNameMonster = 'ENVIRONMENTS';
+const thisStageName = 'WEAPONS';
+const endpoint = 'weapons';
+
+const emporiumWeaponsStage = new Scenes.BaseScene(thisStageName);
 
 emporiumWeaponsStage.enter(async (ctx) => {
-  const api = axios.create({
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${process.env.TOKEN_GET_FILTERS}`
-    },
-  });
-  const data = await api.get('https://api.stl-emporium.ru/api/weapons?fields[0]=value&fields[1]=label&pagination[pageSize]=100');
-  const weapons = data.data.data.map(r => r.attributes.value).sort();
-  ctx.session.weapons = weapons;
-  const creatureData = ctx.session.emporium.creatureData;
-  ctx.replyWithHTML(`Записал указанные тобой классы: ${creatureData.classes.map(r => `${r}`).join(' ')}. Напиши оружие, которое держит существо.\n\nДоступные:${weapons.map(w => `\n<code>${w},</code>`).join('')}`, {
+  const dataFromApi = await emporiumUtils.getDataFromApi(endpoint);
+  ctx.session.data = dataFromApi;
+  ctx.replyWithHTML(`Записал указанные тобой расы:${ctx.session.emporium.creatureData.races.map(r => `${r} `).join(' ')}\n. Напиши оружие, которое держит существо.\n\nДоступные:${dataFromApi.map(w => `\n<code>${w},</code>`).join('')}`, {
     parse_mode: 'HTML'
   }).then(nctx => {
     ctx.session.emporium.botData.lastMessage.bot = nctx.message_id;
@@ -30,9 +27,9 @@ emporiumWeaponsStage.command('exit', (ctx) => {
 })
 
 emporiumWeaponsStage.on('message', (ctx) => {
-  const data = ctx.message.text.replace(/\s/g, '');
-  const weaponsArray = data.split(',').filter((item) => item !== '');
-  const validWeapons = weaponsArray.filter((race) => ctx.session.weapons.includes(race));
+  const userData = ctx.message.text.replace(/\s/g, '');
+  const userDataArray = userData.split(',').filter((item) => item !== '');
+  const validData = userDataArray.filter((d) => ctx.session.data.includes(d));
 
   try {
     ctx.deleteMessage(ctx.session.emporium.botData.lastMessage.bot);
@@ -41,12 +38,18 @@ emporiumWeaponsStage.on('message', (ctx) => {
     console.log(err);
   }
 
-  if (validWeapons.length === 0) {
-    ctx.reply('Указанные тобой оружие не существуют на сайте'); // Respond if no valid races are found
-    ctx.scene.enter('EMPORIUM_CLASSES_WEAPONS');
+  if (validData.length === 0) {
+    ctx.reply('Указанное тобой оружие не существует на сайте'); // Respond if no valid races are found
+    ctx.scene.enter(thisStageName);
   } else {
-    ctx.session.emporium.creatureData.weapons = validWeapons;
-    ctx.scene.enter('EMPORIUM_CLASSES_PHOTO');
+    ctx.session.emporium.creatureData.weapons = validData;
+    if (ctx.session.emporium.creatureData.isHero) {
+      // if hero then first follow the hero path
+      ctx.scene.enter(nextStageNameHero);
+    } else {
+      // otherwise first follow the monster path
+      ctx.scene.enter(nextStageNameMonster);
+    }
   }
 });
 

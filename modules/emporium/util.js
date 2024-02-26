@@ -32,6 +32,7 @@ module.exports = {
       throw error; // Propagate the error
     }
   },
+  
   createACreature: async function (creatureData, isWH) {
     try {
       const endPoint = isWH ? 'wh-creatures' : 'creatures';
@@ -39,6 +40,20 @@ module.exports = {
         headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${newCreatureToken}` },
       })
       console.log(`Created a creature in the emporium`);
+      return 'ok';
+    } catch (error) {
+      console.log('Error: ' + error);
+      throw error; // Propagate the error
+    }
+  },
+
+  createAMonster: async function (creatureData) {
+    try {
+      const endPoint = 'monsters';
+      await axios.post(`https://api.stl-emporium.ru/api/${endPoint}`, creatureData, {
+        headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${newCreatureToken}` },
+      })
+      console.log(`Created a monster in the emporium`);
       return 'ok';
     } catch (error) {
       console.log('Error: ' + error);
@@ -175,5 +190,47 @@ module.exports = {
     const randomFile = filteredFiles[randomIndex];
 
     return randomFile.link;
+  },
+
+  getDataFromApi: async function (endpoint) {
+    const api = axios.create({
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.TOKEN_GET_FILTERS}`
+      },
+    });
+    const dataRaw = await api.get(`https://api.stl-emporium.ru/api/${endpoint}?fields[0]=value&fields[1]=label&pagination[pageSize]=100`);
+    const data = dataRaw.data.data.map(r => r.attributes.value).sort();
+
+    return data;
+  },
+
+  generateACaption: function (creatureData) {
+    let caption = `<u><b>Данные</b></u>\n`
+
+    caption += `\n<i>✍️ Общие</i>\n`
+    caption += `<i>Студия:</i> ${creatureData.studioName}\n`
+    caption += `<i>Релиз:</i> ${creatureData.releaseName}\n`
+    caption += `<i>Код:</i> ${creatureData.code}\n`
+
+    caption += `\n<i>Раса:</i> ${creatureData.race}\n`
+    caption += `<i>Пол:</i> ${creatureData.sex}\n`
+    caption += `<i>Оружие:</i> ${creatureData.weapons.join(', ')}\n`
+
+    if (creatureData.isHero) {
+      caption += `\n<i>⚔️ Герой</i>\n`
+      caption += `<i>Классы:</i> ${creatureData.classes.join(', ')}\n`
+    }
+
+    if (creatureData.isMonster) {
+      caption += `\n<i>☠️ Монстр</i>\n`
+      caption += `<i>Среда обитания:</i> ${creatureData.monsterEnvironments.join(', ')}\n`
+      caption += `<i>Разумность:</i> ${creatureData.monsterIntelligences.join(', ')}\n`
+      caption += `<i>Типы:</i> ${creatureData.monsterTypes.join(', ')}\n`
+      caption += `<i>Виды:</i> ${creatureData.monsterKinds.join(', ')}\n`
+      caption += `<i>Размер:</i> ${creatureData.monsterSizes.join(', ')}\n`
+    }
+    
+    return caption;
   }
 }

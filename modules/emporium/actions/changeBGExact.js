@@ -12,7 +12,7 @@ module.exports = Composer.action(/^action-change-bg-exact-[0-9]+$/g, async ctx =
       console.log(e)
     })
     ctx.session.passingId = crID;
-    ctx.scene.enter('EMPORIUM_STAGE_EXACT_PHOTO');
+    ctx.scene.enter('PICTURE_EXACT');
   } else {
     ctx.answerCbQuery('Нет такого в бд')
   }

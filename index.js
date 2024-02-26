@@ -45,7 +45,6 @@ const replyToTheMessage = (ctx, message, replyToID) => {
 //#region Register Scenes, Init Stage
 const stage = new Scenes.Stage([
   require('./modules/emporium/scenes/type'),
-  require('./modules/emporium/scenes/classes'),
   require('./modules/emporium/scenes/races'),
   require('./modules/emporium/scenes/releaseName'),
   require('./modules/emporium/scenes/sex'),
@@ -53,8 +52,14 @@ const stage = new Scenes.Stage([
   require('./modules/emporium/scenes/weapons'),
   require('./modules/emporium/scenes/photo'),
   require('./modules/emporium/scenes/photoExact'),
-  require('./modules/emporium/scenes/whFactions'),
-  require('./modules/emporium/scenes/whType'),
+  require('./modules/emporium/scenes/heroes/classes.js'),
+  require('./modules/emporium/scenes/monsters/environments.js'),
+  require('./modules/emporium/scenes/monsters/intelligences.js'),
+  require('./modules/emporium/scenes/monsters/kinds.js'),
+  require('./modules/emporium/scenes/monsters/size.js'),
+  require('./modules/emporium/scenes/monsters/types.js'),
+  require('./modules/emporium/scenes/warhammer/whFactions.js'),
+  require('./modules/emporium/scenes/warhammer/whType.js'),
 ]);
 bot.use(session());
 bot.use(stage.middleware());

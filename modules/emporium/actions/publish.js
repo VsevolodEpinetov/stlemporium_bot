@@ -17,26 +17,53 @@ module.exports = Composer.action(/^action-emporium-publish-[0-9]+$/g, async ctx 
     if (isWaiting) {
       const fileName = `${creatureData.code}.png`;
       const imageID = await emporiumUtils.uploadImage(ctx, creatureData.preview.buffer, fileName);
-      let crData;
+      let crData = "";
       if (!creatureData.isWH) {
-        crData = {
-          data: {
-            sex: creatureData.sex,
-            classes: creatureData.classes,
-            races: creatureData.races,
-            mainPicture: imageID,
-            priceSTL: 106,
-            pricePhysical: 318,
-            priceCyprus: 4,
-            studioName: creatureData.studioName,
-            releaseName: creatureData.releaseName,
-            code: creatureData.code,
-            onlyPhysical: false,
-            isMonster: creatureData.isMonster,
-            isHero: creatureData.isHero,
-            weapons: creatureData.weapons
-          }
-        };
+        if (creatureData.isHero) {
+          crData = {
+            data: {
+              sex: creatureData.sex,
+              classes: creatureData.classes,
+              races: creatureData.races,
+              mainPicture: imageID,
+              priceSTL: 106,
+              pricePhysical: 318,
+              studioName: creatureData.studioName,
+              releaseName: creatureData.releaseName,
+              code: creatureData.code,
+              onlyPhysical: false,
+              weapons: creatureData.weapons
+            }
+          };
+          const result = await emporiumUtils.createACreature(crData, creatureData.isWH);
+          const code = ctx.globalSession.emporium.queue[crID].data.code;
+          ctx.reply(`Герой с кодом ${code} успешно загружен`)
+        }
+
+        if (creatureData.isMonster) {
+          crData = {
+            data: {
+              sex: creatureData.sex,
+              races: creatureData.races,
+              mainPicture: imageID,
+              priceSTL: 106,
+              pricePhysical: 318,
+              studioName: creatureData.studioName,
+              releaseName: creatureData.releaseName,
+              code: creatureData.code,
+              onlyPhysical: false,
+              weapons: creatureData.weapons,
+              environments: creatureData.monsterEnvironments,
+              intelligence: creatureData.monsterIntelligences,
+              kinds: creatureData.monsterKinds,
+              size: creatureData.monsterSizes,
+              types: creatureData.monsterTypes
+            }
+          };
+          const result = await emporiumUtils.createAMonster(crData);
+          const code = ctx.globalSession.emporium.queue[crID].data.code;
+          ctx.reply(`Монстр с кодом ${code} успешно загружен`)
+        }
       } else {
         crData = {
           data: {
@@ -52,17 +79,17 @@ module.exports = Composer.action(/^action-emporium-publish-[0-9]+$/g, async ctx 
             type: creatureData.whTypes
           }
         };
-      }
-      try {
         const result = await emporiumUtils.createACreature(crData, creatureData.isWH);
         const code = ctx.globalSession.emporium.queue[crID].data.code;
+        ctx.reply(`вх40к с кодом ${code} успешно загружен`)
+      }
+      try {
         ctx.globalSession.emporium.queue[crID].data.preview = undefined;
         if (!ctx.globalSession.uploaders) {
           ctx.globalSession.uploaders = {}
           ctx.globalSession.uploaders[userID] = 0;
         };
         ctx.globalSession.uploaders[userID] = ctx.globalSession.uploaders[userID] + 1;
-        ctx.reply(`Минька с кодом ${code} успешно загружена`)
       } catch (error) {
         console.log('Error!');
       }

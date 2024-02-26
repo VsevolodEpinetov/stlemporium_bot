@@ -11,5 +11,5 @@ module.exports = Composer.command('emporium', (ctx) => {
   if (!ctx.globalSession.emporium) ctx.globalSession.emporium = {};
   if (!ctx.globalSession.emporium.studios) ctx.globalSession.emporium.studios = {};
   if (!ctx.globalSession.emporium.queue) ctx.globalSession.emporium.queue = [];
-  ctx.scene.enter('EMPORIUM_TYPE_STAGE');
+  ctx.scene.enter('TYPE_OF_MINIATURE');
 })

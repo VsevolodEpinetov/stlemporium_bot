@@ -6,7 +6,6 @@ module.exports = Composer.compose([
   require('./commands/rs'),
   require('./commands/nq'),
   require('./commands/p'),
-  require('./commands/test'),
   require('./commands/count'),
   require('./actions/cancel'),
   require('./actions/publish'),
