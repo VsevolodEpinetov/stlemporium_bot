@@ -9,7 +9,8 @@ const endpoint = 'monster-sizes';
 const monsterSizesStage = new Scenes.BaseScene(thisStageName);
 
 monsterSizesStage.enter(async (ctx) => {
-  const dataFromApi = await emporiumUtils.getDataFromApi(endpoint); 
+  //const dataFromApi = await emporiumUtils.getDataFromApi(endpoint); 
+  const dataFromApi = ['tiny', 'small', 'medium', 'big', 'huge', 'gargantuan']
   ctx.session.data = dataFromApi;
   ctx.replyWithHTML(`Записал указанные тобой данные. Напиши оружие, которое держит существо.\n\nДоступные:${dataFromApi.map(w => `\n<code>${w},</code>`).join('')}`, {
     parse_mode: 'HTML'
