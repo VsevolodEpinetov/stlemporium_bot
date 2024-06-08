@@ -21,8 +21,9 @@ emporiumPhotoStage.enter((ctx) => {
 
 emporiumPhotoStage.on('document', async (ctx) => {
   const creatureData = ctx.session.emporium.creatureData;
+  console.log(creatureData);
   let pathToBaseImage; 
-  if (!creatureData.isWH) pathToBaseImage = await emporiumUtils.getRandomBaseImageRacesAndClasses(creatureData.races, creatureData.classes)
+  if (!creatureData.isWH) pathToBaseImage = await emporiumUtils.getRandomBaseImageRacesAndClasses(creatureData.races, creatureData.classes || creatureData.monsterKinds)
   else pathToBaseImage = await emporiumUtils.getRandomBaseImageSingleFilter(creatureData.factions)
   const resultImageBuffer = await emporiumUtils.placePngAndGetPic(ctx, ctx.message.document.file_id, pathToBaseImage)
   ctx.session.emporium.creatureData.preview = {

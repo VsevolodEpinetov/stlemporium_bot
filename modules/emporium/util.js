@@ -32,7 +32,7 @@ module.exports = {
       throw error; // Propagate the error
     }
   },
-  
+
   createACreature: async function (creatureData, isWH) {
     try {
       const endPoint = isWH ? 'wh-creatures' : 'creatures';
@@ -213,7 +213,7 @@ module.exports = {
     caption += `<i>Релиз:</i> ${creatureData.releaseName}\n`
     caption += `<i>Код:</i> ${creatureData.code}\n`
 
-    caption += `\n<i>Раса:</i> ${creatureData.race}\n`
+    caption += `\n<i>Раса:</i> ${creatureData.races}\n`
     caption += `<i>Пол:</i> ${creatureData.sex}\n`
     caption += `<i>Оружие:</i> ${creatureData.weapons.join(', ')}\n`
 
